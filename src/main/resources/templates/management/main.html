@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>智能商贸系统 - 后台管理</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/easyui/themes/bootstrap/easyui.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/easyui/themes/icon.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/easyui/demo/demo.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        ctxPath = /*[[@{/}]]*/ '';
+        /*]]>*/
+
+        console.debug(ctxPath);
+    </script>
+    <script type="text/javascript" th:src="@{/plugins/easyui/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/easyui/jquery.easyui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/easyui/locale/easyui-lang-zh_CN.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/jquerySerializeJSON/jquery.serializejson.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+<body>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'north'" style="height:100px;background-color: #eee;line-height: 100px;" id="head">
+        <div class="fl">
+            <img th:src="@{/images/logo.png}" style="height: 50px;"/>
+            <h1>智能商贸系统</h1>
+        </div>
+        <div class="fr">
+            欢迎您，<span>用户</span>&nbsp;<a href="#">注销</a>
+        </div>
+    </div>
+    <div data-options="region:'south'" style="overflow: hidden;height: 30px;">
+        <div th:include="footer::copy" style="height:30px;line-height: 30px;"></div>
+    </div>
+    <div data-options="region:'west',title:'菜单',split:true" style="width:300px;">
+        <ul id="menu"></ul>
+    </div>
+    <div data-options="region:'center'">
+        <div id="mainTabs" class="easyui-tabs" data-options="fit:true">
+        </div>
+    </div>
+</div>
+
+
+<!--对话框-->
+<div id="employeeDlg" class="easyui-dialog" title="员工" style="width:400px;height:400px;"
+     data-options="iconCls:'icon-save',modal:true,closed:true">
+    <form id="form" method="post" th:action="@{/management/employee/save}">
+        <input type="hidden" id="id" name="id">
+        <input type="hidden" id="headImage" name="headImage">
+        <div>
+            <label for="username">用户名:</label>
+            <input class="easyui-textbox" type="text" id="username" name="username" data-options="required:true" validType="isUsernameUnique"/>
+        </div>
+        <div>
+            <label for="password">密码:</label>
+            <input class="easyui-textbox" type="password" id="password" name="password" data-options="required:true"/>
+        </div>
+        <div>
+            <label for="confirmPassword">确认密码:</label>
+            <input class="easyui-textbox" type="password" id="confirmPassword" name="confirmPassword"
+                   data-options="required:true" validType="equals['#password']"/>
+        </div>
+        <div>
+            <label for="email">电子邮箱:</label>
+            <input class="easyui-textbox" type="text" id="email" name="email"
+                   data-options="validType:'email',required:true"/>
+        </div>
+        <div>
+            <label for="age">年龄:</label>
+            <input class="easyui-numberbox" type="text" id="age" name="age" data-options="required:true,min:18,max:80"/>
+        </div>
+        <div>
+            <label for="age">部门:</label>
+            <input class="easyui-combobox" name="departmentId"
+                   data-options="valueField:'id',textField:'name',required:true,editable:false"
+                   th:url="@{/management/department/getdepartments}">
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="保存" class="easyui-linkbutton">
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" th:src="@{/js/nav.js}"></script>
+<script type="text/javascript" th:src="@{/js/main.js}"></script>
+</body>
+</html>
