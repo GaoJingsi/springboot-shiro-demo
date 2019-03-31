@@ -32,6 +32,7 @@ public class EmployeeController extends BaseController {
 
     @PostMapping("/getemployees")
     @ResponseBody
+    @RequiresPermissions("employee:page")
     public UIPage<Employee> getEmployees(int page, int rows, String username, String email, Integer departmentId) {
         UIPage<Employee> employees = employeeService.search_Page(page - 1, rows, username, email, departmentId);
         return employees;
@@ -44,6 +45,7 @@ public class EmployeeController extends BaseController {
      */
     @PostMapping("/delete")
     @ResponseBody
+    @RequiresPermissions("employee:delete")
     public Map<String, Object> delete(Long id) {
         Map<String, Object> map = new HashMap<>();
         try {
@@ -66,6 +68,7 @@ public class EmployeeController extends BaseController {
      */
     @PostMapping("/save")
     @ResponseBody
+    @RequiresPermissions("employee:save")
     public Map<String, Object> save(Employee employee, Long departmentId) {
         Map<String, Object> map = new HashMap<>();
         try {

@@ -1,17 +1,15 @@
 package com.github.smartbussinesssys.shiro;
 
 import com.github.smartbussinesssys.domain.Employee;
+import com.github.smartbussinesssys.domain.Permission;
 import com.github.smartbussinesssys.service.IEmployeeService;
-import org.apache.catalina.Role;
+import com.github.smartbussinesssys.service.IPermissionService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.crypto.hash.SimpleHash;
-import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -27,25 +25,29 @@ public class MyShiroRealm extends AuthorizingRealm {
     //用于用户查询
     @Autowired
     private IEmployeeService employeeService;
+    @Autowired
+    private IPermissionService permissionService;
 
     //角色权限和对应权限添加
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         //获取登录用户名
-        String name= (String) principalCollection.getPrimaryPrincipal();
+        String name = (String) principalCollection.getPrimaryPrincipal();
         //查询用户名称
         List<Employee> employees = employeeService.findByUsername(name);
+        Employee employee = employees.get(0);
+
+//      查询用户权限
+        List<Permission> permissions = permissionService.findPermissionsByEmpId(employee.getId());
+
         //添加角色和权限
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-//        for (Role role:employees.get(0).getRoles()) {
-//            //添加角色
-//            simpleAuthorizationInfo.addRole(role.getRoleName());
-//            for (Permission permission:role.getPermissions()) {
-//                //添加权限
-//                simpleAuthorizationInfo.addStringPermission(permission.getPermission());
-//            }
-//        }
-        simpleAuthorizationInfo.addStringPermission("employee:index");
+
+        for (Permission permission :
+                permissions) {
+            simpleAuthorizationInfo.addStringPermission(permission.getSn());
+        }
+//        simpleAuthorizationInfo.addStringPermission("employee:index");
 
         return simpleAuthorizationInfo;
     }

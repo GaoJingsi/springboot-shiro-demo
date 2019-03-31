@@ -44,4 +44,10 @@ public class AccountController {
         }
         return "redirect:/management/main";
     }
+
+    @GetMapping("/logout")
+    public String logout() {
+        SecurityUtils.getSubject().logout();
+        return "management/account/login";
+    }
 }
