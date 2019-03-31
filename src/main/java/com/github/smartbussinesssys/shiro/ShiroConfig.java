@@ -17,22 +17,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.servlet.Filter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configuration
 public class ShiroConfig {
-
-//    @Autowired
-//    private PermissionRepository permissionRepository;
-
-    public ShiroConfig() {
-        System.out.println("2222222222222222222222222222222222222222222");
-    }
 
 
     @Bean
@@ -41,28 +32,8 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
-//        List<Permission> permissionList = permissionRepository.findAll();
-
         //自定义权限过滤器
         shiroFilterFactoryBean.getFilters().put("myperms", new MyPermissionAuthorizationFilter());
-
-
-//        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-//        permissionList.stream().forEach((el) -> {
-//            filterChainDefinitionMap.put(el.getUrl(), "myperms[" + el.getSn() + "]");
-//        });
-
-
-        //<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
-
-//        // 配置不会被拦截的链接 顺序判断
-//        filterChainDefinitionMap.put("/static/**", "anon");
-//        filterChainDefinitionMap.put("/management/account/login", "anon");
-//        //<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-//        filterChainDefinitionMap.put("/**", "authc");
-//        //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
-//        filterChainDefinitionMap.put("/management/account/logout", "authc");
-//        //filterChainDefinitionMap.put("/management/employee/index", "perms[employee:index]");
 
 
         // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
@@ -144,6 +115,15 @@ public class ShiroConfig {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
+    }
+
+    @Bean
+    public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
+        SimpleMappingExceptionResolver simpleMappingExceptionResolver = new SimpleMappingExceptionResolver();
+        Properties properties = new Properties();
+        properties.put("UnauthorizedException", "/403");
+        simpleMappingExceptionResolver.setExceptionMappings(properties);
+        return simpleMappingExceptionResolver;
     }
 
 }
